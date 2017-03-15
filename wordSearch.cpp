@@ -5,15 +5,15 @@
 #include <random>
 using namespace std;
 
-WordSearch::WordSearch(const int inSizeX,const int inSizeY)
+WordSearch::WordSearch(const int inSizeY,const int inSizeX)
 {
 	sizeX=inSizeX;
 	sizeY=inSizeY;
 	charArray = new char*[inSizeY];
-	for(int i = 0;i < sizeX-1;i++)
+	for(int i = 0;i < sizeY-1;i++)
 	{
 		charArray[i]=new char[sizeX];
-		for(int j = 0;j < inSizeX-1;j++)
+		for(int j = 0;j < sizeX-1;j++)
 		{
 			charArray[i][j] = ' ';
 		}
@@ -23,9 +23,13 @@ WordSearch::WordSearch(const int inSizeX,const int inSizeY)
 
 WordSearch::~WordSearch()
 {
-	for(int i=0;i < sizeX;i++)
+	for(int i=0;i < sizeX-1;i++)
 	{
 		delete[] charArray[i];
+	}
+	for(unsigned int i = 0;i < unFoundWords.size() - 1;i++)
+	{
+		delete unFoundWords[i];
 	}
 }
 
@@ -64,6 +68,9 @@ bool WordSearch::addWord(const string& inWord)
 		uniform_int_distribution<int> distribution(0,bestResults->size()-1);
 		int randomValue = distribution(generator);
 		putWordHere(inWord,bestResults->at(randomValue).LocO,bestResults->at(randomValue).LocY,bestResults->at(randomValue).LocX);
+		string* temp = new string();
+		temp->assign(inWord);
+		unFoundWords.push_back(temp);
 		delete bestResults;
 		return true;
 	}
@@ -141,4 +148,29 @@ void WordSearch::print()const
 		cout << endl;
 	}
 	cout << endl << endl;
+	
+	for(string* words : unFoundWords)
+	{
+		cout << *words << endl;
+	}
+	
+}
+
+void WordSearch::complete()
+{
+	random_device rd;
+	default_random_engine generator(rd());
+	uniform_int_distribution<int> distribution(0,25);
+	
+	for(int y = 0;y < sizeY-1;y++)
+	{
+		for(int x = 0;x < sizeX-1;x++)
+		{
+			
+			if(charArray[y][x] == ' ')
+			{
+				charArray[y][x] = distribution(generator)+65;
+			}
+		}
+	}
 }

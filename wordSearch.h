@@ -1,14 +1,16 @@
 #ifndef __WORDSEARCH__
 #define __WORDSEARCH__
 #include <string>
+#include <vector>
 using namespace std;
 
 class WordSearch
 {
 public:
-	WordSearch(const int inSizeX,const int inSizeY);
+	WordSearch(const int inSizeY,const int inSizeX);
 	~WordSearch();
 	bool addWord(const string& inWord);
+	void complete();
 	void print()const;
 	
 private:
@@ -18,6 +20,8 @@ private:
 		int LocY;
 		int LocO;
 	};
+	vector<string*> unFoundWords;
+	vector<string*> foundWords;
 	int sizeX;
 	int sizeY;
 	char** charArray;

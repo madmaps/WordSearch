@@ -7,12 +7,13 @@
 
 using namespace std;
 
-bool addWordFile(WordSearch& inWordSearch,const string inFile,int maxWords = 50);
+bool addWordFile(WordSearch& inWordSearch,const string inFile,const int maxWords = 50);
 
 int main()
 {
-	WordSearch* myWordSearch = new WordSearch(20,20);
-	addWordFile(*myWordSearch,"words.txt",100);
+	WordSearch* myWordSearch = new WordSearch(30,40);
+	addWordFile(*myWordSearch,"words.txt",200);
+	myWordSearch->complete();
 	myWordSearch->print();
 	
 	return 0;
@@ -35,11 +36,11 @@ bool addWordFile(WordSearch& inWordSearch,const string inFile,const int maxWords
 	{
 		while(getline(myFile,line))
 		{
-			transform(line.begin(), line.end(), line.begin(), ::tolower);
+			transform(line.begin(), line.end(), line.begin(), ::toupper);
 			wordList.push_back(line);
 		}
 		int wordListSize = wordList.size();
-		for(int j = 0;j < maxWords && j < wordListSize - 1;j++)
+		for(int j = 0;j < maxWords && j < wordListSize;j++)
 		{
 			uniform_int_distribution<int> distribution(0,wordList.size()-1);
 			randomValue = distribution(generator);
