@@ -49,8 +49,8 @@ int WordSearch::canWordGoHere(const string& inWord,const int inOrientation,const
 	cout << startX << "  " << startY << "  " << endX << "  " << endY << endl;
 	//int xCounter = (startX-endX)/fabs(startX-endX);
 	//int yCounter = (startY-endY)/abs(startY-endY);
-	/*int score = 0;
-	cout << "xCounter: " << xCounter << "  yCounter: " << yCounter << endl;
+	int score = 0;
+	/*cout << "xCounter: " << xCounter << "  yCounter: " << yCounter << endl;
 	for(unsigned int i = 0;i < inWord.length(); i++)
 	{
 		cout << "X: " << startX << "  Y: " << startY << endl;
