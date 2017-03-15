@@ -1,0 +1,18 @@
+CC=g++
+
+CFLAGS= -c -Wall -std=c++11
+
+all: MainSearch
+
+MainSearch: MainSearch.o wordSearch.o
+	$(CC) MainSearch.o wordSearch.o -o MainSearch.out
+
+MainSearch.o: MainSearch.cpp
+	$(CC) $(CFLAGS) MainSearch.cpp
+	
+wordSearch.o: wordSearch.cpp
+	$(CC) $(CFLAGS) wordSearch.cpp
+	
+clean:
+	rm -rf *.o core.* MainSearch.out
+
