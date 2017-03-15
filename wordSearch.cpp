@@ -1,16 +1,24 @@
 #include <iostream>
 #include "wordSearch.h"
+#include <math.h>
+#include <vector>
+#include <random>
 using namespace std;
 
 WordSearch::WordSearch(const int inSizeX,const int inSizeY)
 {
 	sizeX=inSizeX;
 	sizeY=inSizeY;
-	charArray = new char*[inSizeX];
+	charArray = new char*[inSizeY];
 	for(int i = 0;i < sizeX-1;i++)
 	{
-		charArray[i]=new char[sizeY];
+		charArray[i]=new char[sizeX];
+		for(int j = 0;j < inSizeX-1;j++)
+		{
+			charArray[i][j] = ' ';
+		}
 	}
+	
 }
 
 WordSearch::~WordSearch()
@@ -23,49 +31,114 @@ WordSearch::~WordSearch()
 
 bool WordSearch::addWord(const string& inWord)
 {
-	cout << canWordGoHere(inWord,0,0,0);
-	
-	
-	return true;
+	int tempScore = 0;
+	int returnScore = -1;
+	Loc values;
+	vector<Loc>* bestResults = new vector<Loc>;
+	for(int y = 0;y < sizeY;y++)
+	{
+		for(int x = 0;x < sizeX;x++)
+		{
+			for(int orientation = 0;orientation < 8;orientation++)
+			{
+				tempScore = canWordGoHere(inWord,orientation,y,x);
+				if(tempScore >= returnScore)
+				{
+					if(tempScore > returnScore)
+					{
+						bestResults->clear();
+						returnScore = tempScore;
+					}
+					values.LocX = x;
+					values.LocY = y;
+					values.LocO = orientation;
+					bestResults->push_back(values);
+				}
+			}
+		}
+	}
+	if(returnScore >= 0)
+	{
+		random_device rd;
+		default_random_engine generator(rd());
+		uniform_int_distribution<int> distribution(0,bestResults->size()-1);
+		int randomValue = distribution(generator);
+		putWordHere(inWord,bestResults->at(randomValue).LocO,bestResults->at(randomValue).LocY,bestResults->at(randomValue).LocX);
+		delete bestResults;
+		return true;
+	}
+	cout << inWord << " didn't make it" << endl;
+	return false;
 }
 
-int WordSearch::canWordGoHere(const string& inWord,const int inOrientation,const int inLocX,const int inLocY)const
+int WordSearch::canWordGoHere(const string& inWord,const int inOrientation,const int inLocY,const int inLocX)const
 {
-	int x1 = 0, x2 = 0;
-	int y1 = 0, y2 = 0;
-	x1 = (inOrientation + 2) % 8;
-	x2 = (inOrientation + 6) % 8;
-	y1 = (inOrientation + 0) % 8;
-	y2 = (inOrientation + 4) % 8;
-	x1 = !!(x1%4)*(x1/4);
-	x2 = !!(x2%4)*(x2/4);
-	y1 = !!(y1%4)*(y1/4);
-	y2 = !!(y2%4)*(y2/4);
-	
-	int startX = inWord.length()*x1 + inLocX;
-	int startY = inWord.length()*y1 + inLocY;
-	int endX = inWord.length()*x2 + inLocX;
-	int endY = inWord.length()*y2 + inLocY;
-	cout << startX << "  " << startY << "  " << endX << "  " << endY << endl;
-	//int xCounter = (startX-endX)/fabs(startX-endX);
-	//int yCounter = (startY-endY)/abs(startY-endY);
-	int score = 0;
-	/*cout << "xCounter: " << xCounter << "  yCounter: " << yCounter << endl;
-	for(unsigned int i = 0;i < inWord.length(); i++)
-	{
-		cout << "X: " << startX << "  Y: " << startY << endl;
+	int xCounter = 0, yCounter = 0;
 
-		if(score !=-1 && charArray[startX][startY] == inWord[i])
+	xCounter = (inOrientation + 6) % 8;
+	yCounter = (inOrientation + 4) % 8;
+	xCounter = !!(xCounter%4)*(floor(xCounter/4)*2-1);
+	yCounter = !!(yCounter%4)*(floor(yCounter/4)*2-1);
+	
+	int xCurrent = inLocX;
+	int yCurrent = inLocY;
+	int score = 0;
+	for(unsigned int i = 0;i < inWord.length();i++)
+	{
+		if(xCurrent >= 0 && xCurrent < sizeX-1 && yCurrent >=0 && yCurrent < sizeY-1 && score !=-1)
 		{
-			score++;
+			if(inWord[i] == charArray[yCurrent][xCurrent] && score !=-1)
+			{
+				score++;
+			}
+			else
+			{
+				if(charArray[yCurrent][xCurrent] != ' ')
+				{
+					score = -1;
+				}
+			}
 		}
-		else if(charArray[startX][startY] != inWord[i])
+		else
 		{
 			score = -1;
 		}
-		startX += xCounter;
-		startY += yCounter;
+		xCurrent += xCounter;
+		yCurrent += yCounter;
 	}
+
 	
-	return score;*/return 0;
+	return score;
+}
+
+void WordSearch::putWordHere(const string& inWord,const int inOrientation,const int inLocY,const int inLocX)
+{
+	int xCounter = 0, yCounter = 0;
+
+	xCounter = (inOrientation + 6) % 8;
+	yCounter = (inOrientation + 4) % 8;
+	xCounter = !!(xCounter%4)*(floor(xCounter/4)*2-1);
+	yCounter = !!(yCounter%4)*(floor(yCounter/4)*2-1);
+	
+	int xCurrent = inLocX;
+	int yCurrent = inLocY;
+	for(unsigned int i = 0;i < inWord.length();i++)
+	{
+		charArray[yCurrent][xCurrent] = inWord[i];
+		xCurrent += xCounter;
+		yCurrent += yCounter;
+	}
+}
+
+void WordSearch::print()const
+{
+	for(int y = 0;y < sizeY-1;y++)
+	{
+		for(int x = 0;x < sizeX-1;x++)
+		{
+			cout << charArray[y][x] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl << endl;
 }
