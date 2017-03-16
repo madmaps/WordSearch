@@ -7,13 +7,19 @@
 
 using namespace std;
 
-bool addWordFile(WordSearch& inWordSearch,const string inFile,const int maxWords = 50);
+bool addWordFile(WordSearch& inWordSearch,const string inFile,const int inSeed,const int maxWords = 50);
 
 int main()
 {
-	WordSearch* myWordSearch = new WordSearch(30,40);
-	addWordFile(*myWordSearch,"words.txt",200);
-	myWordSearch->complete();
+	random_device rd;
+	int seed = rd();
+	seed = 2442;
+	WordSearch* myWordSearch = new WordSearch(20,20,seed);
+	addWordFile(*myWordSearch,"words.txt",seed,5);
+	myWordSearch->checkForMatch(2,0,2,9);
+	myWordSearch->checkForMatch(1,3,4,4);
+	
+	//myWordSearch->complete();
 	myWordSearch->print();
 	
 	return 0;
@@ -22,13 +28,12 @@ int main()
 
 
 
-bool addWordFile(WordSearch& inWordSearch,const string inFile,const int maxWords)
+bool addWordFile(WordSearch& inWordSearch,const string inFile,const int inSeed,const int maxWords)
 {
 	list<string> wordList;
 	list<string>::iterator iter;
-	random_device rd;
 	int randomValue = 0;
-	default_random_engine generator(rd());
+	default_random_engine generator(inSeed);
 	
 	string line;
 	ifstream myFile(inFile);

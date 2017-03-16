@@ -5,8 +5,9 @@
 #include <random>
 using namespace std;
 
-WordSearch::WordSearch(const int inSizeY,const int inSizeX)
+WordSearch::WordSearch(const int inSizeY,const int inSizeX,const int inSeed)
 {
+	seed = inSeed;
 	sizeX=inSizeX;
 	sizeY=inSizeY;
 	charArray = new char*[inSizeY];
@@ -63,8 +64,7 @@ bool WordSearch::addWord(const string& inWord)
 	}
 	if(returnScore >= 0)
 	{
-		random_device rd;
-		default_random_engine generator(rd());
+		default_random_engine generator(seed);
 		uniform_int_distribution<int> distribution(0,bestResults->size()-1);
 		int randomValue = distribution(generator);
 		putWordHere(inWord,bestResults->at(randomValue).LocO,bestResults->at(randomValue).LocY,bestResults->at(randomValue).LocX);
@@ -137,6 +137,47 @@ void WordSearch::putWordHere(const string& inWord,const int inOrientation,const 
 	}
 }
 
+bool WordSearch::checkForMatch(const int inOrientation,const int inLocY,const int inLocX,const int inLength)
+{
+	int xCounter = 0, yCounter = 0;
+
+	xCounter = (inOrientation + 6) % 8;
+	yCounter = (inOrientation + 4) % 8;
+	xCounter = !!(xCounter%4)*(floor(xCounter/4)*2-1);
+	yCounter = !!(yCounter%4)*(floor(yCounter/4)*2-1);
+	int xCurrent = 0;
+	int yCurrent = 0;
+	bool found = true;
+	bool returnValue = false;
+
+	for(unsigned int j = 0;j < unFoundWords.size();j++)
+	{
+		xCurrent = inLocX;
+		yCurrent = inLocY;
+		found = true;
+		for(int i = 0;i < inLength;i++)
+		{
+			if(charArray[yCurrent][xCurrent] != (*unFoundWords[j])[i])
+			{
+				found = false;
+			}
+			xCurrent += xCounter;
+			yCurrent += yCounter;
+		}
+		if(found)
+		{
+			returnValue = true;
+			foundWords.push_back(unFoundWords[j]);
+			for(unsigned int c = j;c < unFoundWords.size()-1;c++)
+			{
+				unFoundWords[c] = unFoundWords[c+1];
+			}
+			unFoundWords.pop_back();
+		}
+	}
+	return returnValue;
+}
+
 void WordSearch::print()const
 {
 	for(int y = 0;y < sizeY-1;y++)
@@ -158,8 +199,7 @@ void WordSearch::print()const
 
 void WordSearch::complete()
 {
-	random_device rd;
-	default_random_engine generator(rd());
+	default_random_engine generator(seed);
 	uniform_int_distribution<int> distribution(0,25);
 	
 	for(int y = 0;y < sizeY-1;y++)
