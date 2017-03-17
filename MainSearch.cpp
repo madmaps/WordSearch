@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <random>
 #include "wordSearch.h"
+#include "QTWordSearch.h"
 
 using namespace std;
 
@@ -14,13 +15,14 @@ int main()
 	random_device rd;
 	int seed = rd();
 	seed = 2442;
-	WordSearch* myWordSearch = new WordSearch(20,20,seed);
+	QTWordSearch* myWordSearch = new QTWordSearch(20,20,seed);
 	addWordFile(*myWordSearch,"words.txt",seed,5);
 	myWordSearch->checkForMatch(2,0,2,9);
 	myWordSearch->checkForMatch(1,3,4,4);
 	myWordSearch->complete();
 	myWordSearch->print();
-	
+	myWordSearch->draw();
+
 	return 0;
 }
 
