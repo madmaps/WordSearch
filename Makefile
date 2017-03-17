@@ -4,11 +4,14 @@ CFLAGS= -c -Wall -std=c++11
 
 all: MainSearch
 
-MainSearch: MainSearch.o wordSearch.o
-	$(CC) MainSearch.o wordSearch.o -o MainSearch.out
+MainSearch: MainSearch.o wordSearch.o QTWordSearch.o 
+	$(CC) MainSearch.o wordSearch.o QTWordSearch.o -o MainSearch.out
 
-MainSearch.o: MainSearch.cpp
+MainSearch.o: QTWordSearch.cpp
 	$(CC) $(CFLAGS) MainSearch.cpp
+	
+QTWordSearch.o:QTWordSearch.cpp 
+	$(CC) $(CFLAGS) QTWordSearch.cpp
 	
 wordSearch.o: wordSearch.cpp
 	$(CC) $(CFLAGS) wordSearch.cpp
