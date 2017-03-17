@@ -12,8 +12,15 @@ public:
 	bool addWord(const string& inWord);
 	bool checkForMatch(const int inOrientation,const int inLocY,const int inLocX,const int inLength);
 	void complete();
+    virtual void draw() = 0;
 	void print()const;
 	
+protected:
+	vector<string*> unFoundWords;
+	vector<string*> foundWords;
+	int sizeX;
+	int sizeY;
+	char** charArray;
 private:
 	struct Loc
 	{
@@ -22,13 +29,6 @@ private:
 		int LocO;
 	};
 	int seed;
-	vector<string*> unFoundWords;
-	vector<string*> foundWords;
-	int sizeX;
-	int sizeY;
-	char** charArray;
-	
-	
 	int canWordGoHere(const string& inWord,const int inOrientation,const int inLocY,const int inLocX)const;
 	void putWordHere(const string& inWord,const int inOrientation,const int inLocY,const int inLocX);
 };

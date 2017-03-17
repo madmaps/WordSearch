@@ -11,10 +11,10 @@ WordSearch::WordSearch(const int inSizeY,const int inSizeX,const int inSeed)
 	sizeX=inSizeX;
 	sizeY=inSizeY;
 	charArray = new char*[inSizeY];
-	for(int i = 0;i < sizeY-1;i++)
+    for(int i = 0;i < sizeY;i++)
 	{
 		charArray[i]=new char[sizeX];
-		for(int j = 0;j < sizeX-1;j++)
+        for(int j = 0;j < sizeX;j++)
 		{
 			charArray[i][j] = ' ';
 		}
@@ -24,13 +24,17 @@ WordSearch::WordSearch(const int inSizeY,const int inSizeX,const int inSeed)
 
 WordSearch::~WordSearch()
 {
-	for(int i=0;i < sizeX-1;i++)
+    for(int i=0;i < sizeX;i++)
 	{
 		delete[] charArray[i];
 	}
 	for(unsigned int i = 0;i < unFoundWords.size() - 1;i++)
 	{
 		delete unFoundWords[i];
+	}
+	for(unsigned int i = 0;i < foundWords.size() - 1;i++)
+	{
+		delete foundWords[i];
 	}
 }
 
@@ -92,7 +96,7 @@ int WordSearch::canWordGoHere(const string& inWord,const int inOrientation,const
 	int score = 0;
 	for(unsigned int i = 0;i < inWord.length();i++)
 	{
-		if(xCurrent >= 0 && xCurrent < sizeX-1 && yCurrent >=0 && yCurrent < sizeY-1 && score !=-1)
+        if(xCurrent >= 0 && xCurrent < sizeX && yCurrent >=0 && yCurrent < sizeY && score !=-1)
 		{
 			if(inWord[i] == charArray[yCurrent][xCurrent] && score !=-1)
 			{
@@ -180,9 +184,9 @@ bool WordSearch::checkForMatch(const int inOrientation,const int inLocY,const in
 
 void WordSearch::print()const
 {
-	for(int y = 0;y < sizeY-1;y++)
+    for(int y = 0;y < sizeY;y++)
 	{
-		for(int x = 0;x < sizeX-1;x++)
+        for(int x = 0;x < sizeX;x++)
 		{
 			cout << charArray[y][x] << " ";
 		}
@@ -202,9 +206,9 @@ void WordSearch::complete()
 	default_random_engine generator(seed);
 	uniform_int_distribution<int> distribution(0,25);
 	
-	for(int y = 0;y < sizeY-1;y++)
+    for(int y = 0;y < sizeY;y++)
 	{
-		for(int x = 0;x < sizeX-1;x++)
+        for(int x = 0;x < sizeX;x++)
 		{
 			
 			if(charArray[y][x] == ' ')

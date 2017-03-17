@@ -18,8 +18,7 @@ int main()
 	addWordFile(*myWordSearch,"words.txt",seed,5);
 	myWordSearch->checkForMatch(2,0,2,9);
 	myWordSearch->checkForMatch(1,3,4,4);
-	
-	//myWordSearch->complete();
+	myWordSearch->complete();
 	myWordSearch->print();
 	
 	return 0;
